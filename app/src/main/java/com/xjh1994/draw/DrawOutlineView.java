@@ -27,6 +27,8 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
     private boolean[][] mArray;
     private int offsetY = 100;
 
+    private int mSpeed = 20;
+
     private Bitmap mPaintBm;
     private Point mLastPoint = new Point(0, 0);
 
@@ -121,9 +123,11 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
         canvas.drawBitmap(mTmpBm, 0, 0, mPaint);
         if (p != null)
             canvas.drawBitmap(mPaintBm, p.x, p.y - mPaintBm.getHeight() + offsetY, mPaint);
+
         mSurfaceHolder.unlockCanvasAndPost(canvas);
         return true;
     }
+
     //重画
     public void reDraw(boolean[][] array) {
         if (isDrawing) return;
@@ -155,7 +159,7 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
                         break;
                     }
                     try {
-                        sleep(20);
+                        sleep(mSpeed);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -190,5 +194,13 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
 
+    }
+
+    public int getmSpeed() {
+        return mSpeed;
+    }
+
+    public void setmSpeed(int mSpeed) {
+        this.mSpeed = mSpeed;
     }
 }

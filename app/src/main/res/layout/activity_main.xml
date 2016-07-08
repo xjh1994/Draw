@@ -29,6 +29,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="speed"
+            android:text="快速" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:onClick="draw"
+            android:text="画图" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
@@ -40,7 +62,6 @@
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:src="@drawable/test" />
-
 
         <com.xjh1994.draw.DrawOutlineView
             android:id="@+id/outline"

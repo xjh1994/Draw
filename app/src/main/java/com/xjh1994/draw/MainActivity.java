@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -46,6 +45,22 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 2);
+    }
+
+    public void speed(View view) {
+        if (drawOutlineView.getmSpeed() < 1000) {
+            drawOutlineView.setmSpeed(drawOutlineView.getmSpeed() + 100);
+        } else {
+            drawOutlineView.setmSpeed(20);
+        }
+    }
+
+    public void draw(View view) {
+        if (first) {
+            first = false;
+            drawOutlineView.beginDraw(getArray(sobelBm));
+        } else
+            drawOutlineView.reDraw(getArray(sobelBm));
     }
 
     @Override
@@ -104,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean first = true;
 
-    @Override
+    /*@Override
     public boolean onTouchEvent(MotionEvent event) {
         if (first) {
             first = false;
@@ -112,5 +127,5 @@ public class MainActivity extends AppCompatActivity {
         } else
             drawOutlineView.reDraw(getArray(sobelBm));
         return true;
-    }
+    }*/
 }
