@@ -16,6 +16,7 @@ import android.view.SurfaceView;
  */
 public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callback {
 
+    private Context context;
     private SurfaceHolder mSurfaceHolder;
     private Bitmap mTmpBm;
     private Canvas mTmpCanvas;
@@ -26,6 +27,7 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
     private int mSrcBmHeight;
     private boolean[][] mArray;
     private int offsetY = 100;
+    private int offsetX = 100;
 
     private int mSpeed = 20;
 
@@ -34,16 +36,17 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
 
     public DrawOutlineView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public DrawOutlineView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
+        this.context = context;
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
         mPaint = new Paint();
@@ -116,15 +119,19 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
             if (p == null) {//如果p为空，说明所有的点已经绘制完成
                 return false;
             }
-            mTmpCanvas.drawPoint(p.x, p.y + offsetY, mPaint);
+            mTmpCanvas.drawPoint(p.x + offsetX, p.y + offsetY, mPaint);
         }
-        //将bitmap绘制到SurfaceView中
-        Canvas canvas = mSurfaceHolder.lockCanvas();
-        canvas.drawBitmap(mTmpBm, 0, 0, mPaint);
-        if (p != null)
-            canvas.drawBitmap(mPaintBm, p.x, p.y - mPaintBm.getHeight() + offsetY, mPaint);
+        try {
+            //将bitmap绘制到SurfaceView中
+            Canvas canvas = mSurfaceHolder.lockCanvas();
+            canvas.drawBitmap(mTmpBm, 0, 0, mPaint);
+            if (p != null)
+                canvas.drawBitmap(mPaintBm, p.x + offsetX, p.y - mPaintBm.getHeight() + offsetY, mPaint);
 
-        mSurfaceHolder.unlockCanvasAndPost(canvas);
+            mSurfaceHolder.unlockCanvasAndPost(canvas);
+        } catch (NullPointerException e) {
+
+        }
         return true;
     }
 
@@ -147,6 +154,8 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
         this.mArray = array;
         mSrcBmWidth = array.length;
         mSrcBmHeight = array[0].length;
+
+        offsetX = (int) ((getWidthInPx(context) - mSrcBmWidth) / 2);
 
         new Thread() {
             @Override
@@ -202,5 +211,23 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
 
     public void setmSpeed(int mSpeed) {
         this.mSpeed = mSpeed;
+    }
+
+    public static final float getHeightInPx(Context context) {
+        final float height = context.getResources().getDisplayMetrics().heightPixels;
+        return height;
+    }
+
+    public static final float getWidthInPx(Context context) {
+        final float width = context.getResources().getDisplayMetrics().widthPixels;
+        return width;
+    }
+
+    public boolean isDrawing() {
+        return isDrawing;
+    }
+
+    public void setDrawing(boolean drawing) {
+        isDrawing = drawing;
     }
 }

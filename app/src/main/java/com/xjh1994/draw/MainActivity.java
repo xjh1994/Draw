@@ -8,24 +8,35 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
+
+import com.gc.materialdesign.views.Slider;
 
 public class MainActivity extends AppCompatActivity {
     private DrawOutlineView drawOutlineView;
     private Bitmap sobelBm;
     private ImageView imageView;
+    private Slider slider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        try {
+            getSupportActionBar().setElevation(0);
+        } catch (NullPointerException e) {
+
+        }
 
         //将Bitmap压缩处理，防止OOM
         Bitmap bm = CommenUtils.getRatioBitmap(this, R.drawable.test, 100, 100);
         sobelBm = SobelUtils.Sobel(bm);
 
         drawOutlineView = (DrawOutlineView) findViewById(R.id.outline);
+        slider = (Slider) findViewById(R.id.slider);
+        slider.setValue(980);
 
         Bitmap paintBm = CommenUtils.getRatioBitmap(this, R.drawable.paint, 10, 20);
         drawOutlineView.setPaintBm(paintBm);
@@ -34,25 +45,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pickPhoto(View view) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 1);
+        if (!drawOutlineView.isDrawing()) {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, 1);
+        }
     }
 
     public void pickPen(View view) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 2);
+        if (!drawOutlineView.isDrawing()) {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, 2);
+        }
     }
 
     public void speed(View view) {
-        if (drawOutlineView.getmSpeed() < 1000) {
-            drawOutlineView.setmSpeed(drawOutlineView.getmSpeed() + 100);
-        } else {
-            drawOutlineView.setmSpeed(20);
-        }
+        slider.setVisibility(View.VISIBLE);
+        slider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int value) {
+                drawOutlineView.setmSpeed(1000 - value);
+                slider.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        final AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
+                        alphaAnimation.setDuration(1000);
+                        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                slider.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                        slider.startAnimation(alphaAnimation);
+                        alphaAnimation.startNow();
+                    }
+                }, 2000);
+            }
+        });
     }
 
     public void draw(View view) {

@@ -1,74 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="pickPhoto"
-            android:text="选择图片" />
+            android:id="@+id/btn_picture"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/ic_picture_white"
+            android:onClick="pickPhoto" />
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/btn_pen"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:onClick="pickPen"
-            android:text="选择画笔" />
-    </LinearLayout>
+            android:layout_toRightOf="@id/btn_picture"
+            android:background="@drawable/ic_pen_white"
+            android:onClick="pickPen" />
 
-    <LinearLayout
+        <Button
+            android:id="@+id/btn_speed"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/btn_pen"
+            android:background="@drawable/ic_speed"
+            android:onClick="speed" />
+
+        <Button
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/ic_begin"
+            android:onClick="draw" />
+    </RelativeLayout>
+
+    <com.gc.materialdesign.views.Slider
+        android:id="@+id/slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:background="#1E88E5"
+        android:visibility="gone"
+        materialdesign:max="1000"
+        materialdesign:min="20"
+        materialdesign:showNumberIndicator="true" />
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="speed"
-            android:text="快速" />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:onClick="draw"
-            android:text="画图" />
-    </LinearLayout>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/dd"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="30dp"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
             android:background="#FFFFFF"
             android:src="@drawable/test" />
 
         <com.xjh1994.draw.DrawOutlineView
             android:id="@+id/outline"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dd"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
+    </RelativeLayout>
 
 
 </LinearLayout>
