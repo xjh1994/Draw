@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">手绘家</string>
+    <string name="action_save">保存</string>
+    <string name="action_about">关于</string>
+    <string name="talks">手绘家是将一张图片转成手绘效果，并模拟画家动态绘制的APP。点击图片可以进入相册选择自己的图片，点击空白处即可开始手绘。灵感来自：http://www.jianshu.com/p/00d6cf38f142#\n\n玩得停不下来有木有~</string>
 </resources>

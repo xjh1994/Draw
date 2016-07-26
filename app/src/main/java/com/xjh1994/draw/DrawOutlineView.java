@@ -34,6 +34,8 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
     private Bitmap mPaintBm;
     private Point mLastPoint = new Point(0, 0);
 
+    private boolean hasDraw = false;
+
     public DrawOutlineView(Context context) {
         super(context);
         init(context);
@@ -135,6 +137,10 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
         return true;
     }
 
+    public Bitmap getBitmap() {
+        return mTmpBm;
+    }
+
     //重画
     public void reDraw(boolean[][] array) {
         if (isDrawing) return;
@@ -174,10 +180,18 @@ public class DrawOutlineView extends SurfaceView implements SurfaceHolder.Callba
                     }
                 }
                 isDrawing = false;
+                hasDraw = true;
             }
         }.start();
     }
 
+    public boolean hasDraw() {
+        return hasDraw;
+    }
+
+    public void setHasDraw(boolean hasDraw) {
+        this.hasDraw = hasDraw;
+    }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {

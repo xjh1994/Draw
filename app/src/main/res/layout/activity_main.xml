@@ -1,68 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contentPanel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="10dp">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <Button
-            android:id="@+id/btn_picture"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/ic_picture_white"
-            android:onClick="pickPhoto" />
-
-        <Button
-            android:id="@+id/btn_pen"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/btn_picture"
-            android:background="@drawable/ic_pen_white"
-            android:onClick="pickPen" />
-
-        <Button
-            android:id="@+id/btn_speed"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/btn_pen"
-            android:background="@drawable/ic_speed"
-            android:onClick="speed" />
-
-        <Button
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/ic_begin"
-            android:onClick="draw" />
-    </RelativeLayout>
-
-    <com.gc.materialdesign.views.Slider
-        android:id="@+id/slider"
+        android:id="@+id/rl_draw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="#1E88E5"
-        android:visibility="gone"
-        materialdesign:max="1000"
-        materialdesign:min="20"
-        materialdesign:showNumberIndicator="true" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
         android:orientation="vertical">
 
         <ImageView
@@ -82,5 +31,4 @@
             android:layout_marginTop="10dp" />
     </RelativeLayout>
 
-
-</LinearLayout>
+</RelativeLayout>

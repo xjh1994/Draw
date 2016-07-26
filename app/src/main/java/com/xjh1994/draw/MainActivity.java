@@ -5,43 +5,119 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import com.gc.materialdesign.views.Slider;
+import java.io.File;
+
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.update.BmobUpdateAgent;
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
 
 public class MainActivity extends AppCompatActivity {
+
     private DrawOutlineView drawOutlineView;
     private Bitmap sobelBm;
     private ImageView imageView;
-    private Slider slider;
+    private RelativeLayout contentPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        try {
-            getSupportActionBar().setElevation(0);
-        } catch (NullPointerException e) {
 
-        }
+        Bmob.initialize(this, "6691de2a1e3a6908f84cb9bc79732915");
 
         //将Bitmap压缩处理，防止OOM
         Bitmap bm = CommenUtils.getRatioBitmap(this, R.drawable.test, 100, 100);
         sobelBm = SobelUtils.Sobel(bm);
 
         drawOutlineView = (DrawOutlineView) findViewById(R.id.outline);
-        slider = (Slider) findViewById(R.id.slider);
-        slider.setValue(980);
 
         Bitmap paintBm = CommenUtils.getRatioBitmap(this, R.drawable.paint, 10, 20);
         drawOutlineView.setPaintBm(paintBm);
 
         imageView = (ImageView) findViewById(R.id.dd);
+        contentPanel = (RelativeLayout) findViewById(R.id.contentPanel);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!drawOutlineView.isDrawing()) {
+                    pickPhoto(null);
+                }
+            }
+        });
+
+        initGuide();
+        BmobUpdateAgent.forceUpdate(this);
+    }
+
+    private void initGuide() {
+        GuideUtils.show(this, imageView, "点击图片选择相册", "imageView", new MaterialIntroListener() {
+            @Override
+            public void onUserClicked(String s) {
+                GuideUtils.show(MainActivity.this, drawOutlineView, "点击空白开始手绘", "drawOutlineView", new MaterialIntroListener() {
+                    @Override
+                    public void onUserClicked(String s) {
+                        if (!drawOutlineView.isDrawing()) {
+                            draw(null);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!drawOutlineView.isDrawing()) {
+            draw(null);
+        }
+
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                if (!drawOutlineView.isDrawing()) {
+                    if (drawOutlineView.hasDraw()) {
+                        Bitmap bitmap = drawOutlineView.getBitmap();
+                        if (bitmap != null) {
+                            save(bitmap);
+                        } else {
+                            Toast.makeText(MainActivity.this, "保存失败~", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "还没画完呢~", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "还没画完呢~", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.action_about:
+                startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     public void pickPhoto(View view) {
@@ -50,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, 1);
+
+            drawOutlineView.setHasDraw(false);
         }
     }
 
@@ -62,47 +140,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void speed(View view) {
-        slider.setVisibility(View.VISIBLE);
-        slider.setOnValueChangedListener(new Slider.OnValueChangedListener() {
-            @Override
-            public void onValueChanged(int value) {
-                drawOutlineView.setmSpeed(1000 - value);
-                slider.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        final AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
-                        alphaAnimation.setDuration(1000);
-                        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                slider.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        });
-                        slider.startAnimation(alphaAnimation);
-                        alphaAnimation.startNow();
-                    }
-                }, 2000);
-            }
-        });
-    }
-
     public void draw(View view) {
         if (first) {
             first = false;
             drawOutlineView.beginDraw(getArray(sobelBm));
         } else
             drawOutlineView.reDraw(getArray(sobelBm));
+    }
+
+    private static final String APP_DIR = "draw";
+
+    public void save(Bitmap bitmap) {
+        BitmapUtils.saveImage(this, bitmap, APP_DIR + String.valueOf(System.currentTimeMillis()) + ".jpg");
+        File appDir = new File(Environment.getExternalStorageDirectory(), APP_DIR);
+        String msg = String.format("图片已保存至 %s 文件夹", appDir.getAbsolutePath());
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
